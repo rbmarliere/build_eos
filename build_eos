@@ -1,0 +1,30 @@
+#!/bin/zsh
+
+export WASM_LLVM_CONFIG=$GIT_ROOT/llvm/release/bin/llvm-config
+
+if [[ ! -d $GIT_ROOT/eos ]]; then
+    git clone --recursive git@github.com:EOSIO/eos.git $GIT_ROOT/eos
+fi
+
+cd $GIT_ROOT/eos
+branch=${branch:-master}
+git clean -fdx
+git fetch --all
+git checkout -b $branch
+git pull origin $branch
+git submodule update --recursive
+mkdir {build,release}
+cd build
+
+cmake \
+    -DBOOST_LIBRARYDIR=$GIT_ROOT/boost/release/lib \
+    -DBOOST_ROOT=$GIT_ROOT/boost \
+    -DBINARYEN_ROOT=$GIT_ROOT/binaryen/release \
+    -DCMAKE_INSTALL_PREFIX=$GIT_ROOT/eos/release \
+    -DCMAKE_PREFIX_PATH=$GIT_ROOT/llvm/release \
+    -DCMAKE_C_COMPILER=$GIT_ROOT/llvm/release/bin/clang \
+    -DSecp256k1_ROOT_DIR=$GIT_ROOT/secp256k1-zkp/release \
+    ..
+
+make -j$(nproc) install
+

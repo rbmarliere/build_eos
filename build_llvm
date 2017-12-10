@@ -1,0 +1,31 @@
+#!/bin/zsh
+
+if [[ ! -d $GIT_ROOT/llvm ]]; then
+    git clone \
+        --depth 1 \
+        --single-branch \
+        --branch release_40 \
+        git@github.com:llvm-mirror/llvm.git $GIT_ROOT/llvm
+    git clone \
+        --depth 1 \
+        --single-branch \
+        --branch release_40 \
+        git@github.com:llvm-mirror/clang.git $GIT_ROOT/llvm/tools/clang
+fi
+
+cd $GIT_ROOT/llvm
+git clean -fdx
+mkdir {build,release}
+cd build
+
+cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=$GIT_ROOT/llvm/release \
+    -DLLVM_ENABLE_RTTI=On \
+    -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
+    -DLLVM_TARGETS_TO_BUILD=X86 \
+    -G "Unix Makefiles" \
+    ..
+
+make -j$(nproc) check-all install
+

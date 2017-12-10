@@ -1,0 +1,13 @@
+#!/bin/zsh
+
+if [[ ! -d $GIT_ROOT/secp256k1-zkp ]]; then
+    git clone git@github.com:cryptonomex/secp256k1-zkp.git $GIT_ROOT/secp256k1-zkp
+fi
+
+cd $GIT_ROOT/secp256k1-zkp
+git clean -fdx
+./autogen.sh
+./configure --prefix=$GIT_ROOT/secp256k1-zkp/release
+
+make -j$(nproc) install
+

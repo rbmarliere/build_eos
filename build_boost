@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+export BOOST_VER=boost-1.64.0
+
+if [[ ! -d $GIT_ROOT/boost ]]; then
+    git clone --recursive git@github.com:boostorg/boost.git $GIT_ROOT/boost
+fi
+
+cd $GIT_ROOT/boost
+git clean -fdx
+git checkout --force "$BOOST_VER"
+git submodule foreach 'git checkout --force "$BOOST_VER" || true'
+
+./bootstrap.sh
+./b2 --ignore-site-config \
+     --prefix=$GIT_ROOT/boost \
+     -j$(nproc) \
+     install
+
