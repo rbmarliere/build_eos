@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 build_secp256k1-zkp && build_bynarien && build_boost && build_llvm && build_eos
 

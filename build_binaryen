@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 if [[ ! -d $USER_GIT_ROOT/binaryen ]]; then
     git clone git@github.com:WebAssembly/binaryen.git $USER_GIT_ROOT/binaryen
