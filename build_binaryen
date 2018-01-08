@@ -1,16 +1,16 @@
 #!/bin/zsh
 
-if [[ ! -d $GIT_ROOT/binaryen ]]; then
-    git clone git@github.com:WebAssembly/binaryen.git $GIT_ROOT/binaryen
+if [[ ! -d $USER_GIT_ROOT/binaryen ]]; then
+    git clone git@github.com:WebAssembly/binaryen.git $USER_GIT_ROOT/binaryen
 fi
 
-cd $GIT_ROOT/binaryen
+cd $USER_GIT_ROOT/binaryen
 git clean -fdx
 mkdir build
 cd build
 
 cmake \
-    -DCMAKE_INSTALL_PREFIX=$GIT_ROOT/binaryen/release \
+    -DCMAKE_INSTALL_PREFIX=$USER_GIT_ROOT/binaryen/release \
     ..
 
 make -j$(nproc) install
