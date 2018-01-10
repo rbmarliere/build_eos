@@ -12,5 +12,5 @@ cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX=$WD/release \
     ..
-make -j{$NPROC:-1} install
+make -j${NPROC:-1} install
 

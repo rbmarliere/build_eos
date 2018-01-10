@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
 
-[[ $(uname) == "FreeBSD" ]] || NPROC=$(sysctl hw.ncpu | awk '{print $2}')
-[[ $(uname) == "Linux" ]] || NPROC=$(nproc)
+NPROC=$(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 1)
 export NPROC
 
 [[ $USER_GIT_ROOT != "" ]] || read USER_GIT_ROOT"?\"Absolute path to clone required projects into(\$USER_GIT_ROOT)\"= "

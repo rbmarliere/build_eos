@@ -6,7 +6,7 @@ if [[ ! -d $WD ]]; then
 fi
 
 cd $WD
-read REPLY"?git clean $WD? [y|N] "
+read REPLY"?clean $WD? [y|N] "
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     git clean -fdx
 fi
