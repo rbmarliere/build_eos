@@ -1,4 +1,22 @@
 #!/usr/bin/env zsh
 
-build_secp256k1-zkp && build_bynarien && build_boost && build_llvm && build_eos
+[[ $(uname) == "FreeBSD" ]] || NPROC=$(sysctl hw.ncpu | awk '{print $2}')
+[[ $(uname) == "Linux" ]] || NPROC=$(nproc)
+export NPROC
+
+[[ $USER_GIT_ROOT != "" ]] || read USER_GIT_ROOT"?\"Absolute path to clone required projects into(\$USER_GIT_ROOT)\"= "
+[[ $USER_GIT_ROOT = /* ]] || { echo >&2 "error: not an absolute path."; exit 1 }
+export USER_GIT_ROOT
+mkdir -p $USER_GIT_ROOT || exit 1
+
+read REPLY"?build secp256k1-zkp? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && ./build_secp256k1-zkp
+read REPLY"?build binaryen? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && ./build_binaryen
+read REPLY"?build boost? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && ./build_boost
+read REPLY"?build llvm? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && ./build_llvm
+read REPLY"?build eos? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && ./build_eos
 

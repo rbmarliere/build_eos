@@ -1,17 +1,16 @@
 #!/usr/bin/env zsh
 
-if [[ ! -d $USER_GIT_ROOT/binaryen ]]; then
-    git clone git@github.com:WebAssembly/binaryen.git $USER_GIT_ROOT/binaryen
-fi
+WD=$USER_GIT_ROOT/binaryen
+[[ ! -d $WD ]] && git clone git@github.com:WebAssembly/binaryen.git $WD
 
-cd $USER_GIT_ROOT/binaryen
-git clean -fdx
-mkdir build
+cd $WD
+read REPLY"?clean $WD? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+mkdir -p {build,release}
 cd build
 
 cmake \
-    -DCMAKE_INSTALL_PREFIX=$USER_GIT_ROOT/binaryen/release \
+    -DCMAKE_INSTALL_PREFIX=$WD/release \
     ..
-
-make -j$(nproc) install
+make -j{$NPROC:-1} install
 

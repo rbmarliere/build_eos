@@ -1,19 +1,26 @@
 #!/usr/bin/env zsh
 
-export BOOST_VER=boost-1.64.0
+BOOST_VER=boost-1.64.0
+WD=$USER_GIT_ROOT/boost
+[[ ! -d $WD ]] && git clone \
+                    --recursive \
+                    --single-branch \
+                    --branch "$BOOST_VER" \
+                    git@github.com:boostorg/boost.git $WD
 
-if [[ ! -d $USER_GIT_ROOT/boost ]]; then
-    git clone --recursive git@github.com:boostorg/boost.git $USER_GIT_ROOT/boost
-fi
+cd $WD
+read REPLY"?clean $WD? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+mkdir -p {build,release}
 
-cd $USER_GIT_ROOT/boost
-git clean -fdx
-git checkout --force "$BOOST_VER"
-git submodule foreach 'git checkout --force "$BOOST_VER" || true'
-
-./bootstrap.sh
-./b2 --ignore-site-config \
-     --prefix=$USER_GIT_ROOT/boost \
-     -j$(nproc) \
-     install
+./bootstrap.sh \
+    --prefix=$WD/release \
+    --with-toolset=clang
+./b2 -a \
+    -j${NPROC:-1} \
+    --build-dir=$WD/build \
+    --prefix=$WD/release \
+    toolset=clang \
+    threading=multi \
+    install
 

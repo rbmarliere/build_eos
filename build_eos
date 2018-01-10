@@ -1,30 +1,31 @@
 #!/usr/bin/env zsh
 
-export WASM_LLVM_CONFIG=$USER_GIT_ROOT/llvm/release/bin/llvm-config
+WD=$USER_GIT_ROOT/eos
+[[ ! -d $WD ]] && git clone --recursive git@github.com:EOSIO/eos.git $WD
 
-if [[ ! -d $USER_GIT_ROOT/eos ]]; then
-    git clone --recursive git@github.com:EOSIO/eos.git $USER_GIT_ROOT/eos
+cd $WD
+read REPLY"?clean $WD? [y|N] "
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    read TAG"?tag? [default: master] "
+    TAG=${TAG:-master}
+    git clean -fdx
+    git fetch --all
+    git checkout -b $TAG
+    git pull origin $TAG
+    git submodule update --recursive
 fi
-
-cd $USER_GIT_ROOT/eos
-tag=${tag:-master}
-git clean -fdx
-git fetch --all
-git checkout -b $tag
-git pull origin $tag
-git submodule update --recursive
-mkdir {build,release}
+mkdir -p {build,release}
 cd build
 
 cmake \
-    -DBOOST_LIBRARYDIR=$USER_GIT_ROOT/boost/release/lib \
-    -DBOOST_ROOT=$USER_GIT_ROOT/boost \
-    -DBINARYEN_ROOT=$USER_GIT_ROOT/binaryen/release \
-    -DCMAKE_INSTALL_PREFIX=$USER_GIT_ROOT/eos/release \
-    -DCMAKE_PREFIX_PATH=$USER_GIT_ROOT/llvm/release \
     -DCMAKE_C_COMPILER=$USER_GIT_ROOT/llvm/release/bin/clang \
+    -DCMAKE_EXE_LINKER_FLAGS="-lexecinfo -lpthread" \
+    -DCMAKE_INSTALL_PREFIX=$WD/release \
+    -DCMAKE_PREFIX_PATH=$USER_GIT_ROOT/llvm/release \
+    -DBINARYEN_ROOT=$USER_GIT_ROOT/binaryen/release \
+    -DBOOST_ROOT=$USER_GIT_ROOT/boost/release \
     -DSecp256k1_ROOT_DIR=$USER_GIT_ROOT/secp256k1-zkp/release \
+    -DWASM_LLVM_CONFIG=$USER_GIT_ROOT/llvm/release/bin/llvm-config \
     ..
-
-make -j$(nproc) install
+make -j${NPROC:-1} install
 

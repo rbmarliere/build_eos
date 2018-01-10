@@ -1,13 +1,17 @@
 #!/usr/bin/env zsh
 
-if [[ ! -d $USER_GIT_ROOT/secp256k1-zkp ]]; then
-    git clone git@github.com:cryptonomex/secp256k1-zkp.git $USER_GIT_ROOT/secp256k1-zkp
+WD=$USER_GIT_ROOT/secp256k1-zkp
+if [[ ! -d $WD ]]; then
+    git clone git@github.com:cryptonomex/secp256k1-zkp.git $WD
 fi
 
-cd $USER_GIT_ROOT/secp256k1-zkp
-git clean -fdx
-./autogen.sh
-./configure --prefix=$USER_GIT_ROOT/secp256k1-zkp/release
+cd $WD
+read REPLY"?git clean $WD? [y|N] "
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    git clean -fdx
+fi
 
-make -j$(nproc) install
+./autogen.sh
+./configure --prefix=$WD/release
+gmake -j${NPROC:-1} install
 
