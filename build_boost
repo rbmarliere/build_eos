@@ -13,14 +13,15 @@ read REPLY"?clean $WD? [y|N] "
 [[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
 mkdir -p {build,release}
 
+[[ $(uname) == "Linux" ]] && TOOLSET=gcc
+[[ $$(uname) == "FreeBSD" ]] && TOOLSET=clang
 ./bootstrap.sh \
-    --prefix=$WD/release \
-    --with-toolset=clang
+    --with-toolset=$TOOLSET
 ./b2 -a \
+    --ignore-site-config \
     -j${NPROC:-1} \
-    --build-dir=$WD/build \
-    --prefix=$WD/release \
-    toolset=clang \
+    --prefix=$WD \
+    toolset=$TOOLSET \
     threading=multi \
     install
 

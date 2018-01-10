@@ -23,7 +23,7 @@ cmake \
     -DCMAKE_INSTALL_PREFIX=$WD/release \
     -DCMAKE_PREFIX_PATH=$USER_GIT_ROOT/llvm/release \
     -DBINARYEN_ROOT=$USER_GIT_ROOT/binaryen/release \
-    -DBOOST_ROOT=$USER_GIT_ROOT/boost/release \
+    -DBOOST_ROOT=$USER_GIT_ROOT/boost \
     -DSecp256k1_ROOT_DIR=$USER_GIT_ROOT/secp256k1-zkp/release \
     -DWASM_LLVM_CONFIG=$USER_GIT_ROOT/llvm/release/bin/llvm-config \
     ..
