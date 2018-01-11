@@ -14,13 +14,20 @@ read REPLY"?clean $WD? [y|N] "
 mkdir -p {build,release}
 
 [[ $(uname) == "Linux" ]] && TOOLSET=gcc
-[[ $$(uname) == "FreeBSD" ]] && TOOLSET=clang
+[[ $(uname) == "FreeBSD" ]] && TOOLSET=clang
 ./bootstrap.sh \
     --with-toolset=$TOOLSET
-./b2 -a \
+./b2 \
     --ignore-site-config \
     -j${NPROC:-1} \
-    --prefix=$WD \
+    --prefix=$WD/release \
+    toolset=$TOOLSET \
+    threading=multi \
+    headers
+./b2 \
+    --ignore-site-config \
+    -j${NPROC:-1} \
+    --prefix=$WD/release \
     toolset=$TOOLSET \
     threading=multi \
     install
