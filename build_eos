@@ -10,7 +10,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     TAG=${TAG:-master}
     git clean -fdx
     git fetch --all
-    git checkout -b $TAG
+    git checkout -B $TAG
     git pull origin $TAG
     git submodule update --recursive
 fi
