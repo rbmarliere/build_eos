@@ -4,22 +4,26 @@ WD=$USER_GIT_ROOT/eos
 [[ ! -d $WD ]] && git clone --recursive git@github.com:EOSIO/eos.git $WD
 
 cd $WD
-read REPLY"?clean and pull $WD? (type yes if you want to checkout a specific tag) [y|N] "
+
+read REPLY"?clean $WD? [y|N] "
+[[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+
+read REPLY"?pull $WD? (type yes if you want to checkout a specific tag) [y|N] "
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     read TAG"?tag? (default: master) "
     TAG=${TAG:-master}
-    git clean -fdx
     git fetch --all
-    git checkout -B $TAG
+    git checkout $TAG
     git pull origin $TAG
     git submodule update --recursive
 fi
 mkdir -p {build,release}
 cd build
 
+[[ $(uname) == "FreeBSD" ]] && LINKER_FLAGS="-lexecinfo -lpthread"
 cmake \
     -DCMAKE_C_COMPILER=$USER_GIT_ROOT/llvm/release/bin/clang \
-    -DCMAKE_EXE_LINKER_FLAGS="-lexecinfo -lpthread" \
+    -DCMAKE_EXE_LINKER_FLAGS="$LINKER_FLAGS" \
     -DCMAKE_INSTALL_PREFIX=$WD/release \
     -DCMAKE_PREFIX_PATH=$USER_GIT_ROOT/llvm/release \
     -DBINARYEN_ROOT=$USER_GIT_ROOT/binaryen/release \
