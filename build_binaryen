@@ -4,8 +4,8 @@ WD=$USER_GIT_ROOT/binaryen
 [[ ! -d $WD ]] && git clone git@github.com:WebAssembly/binaryen.git $WD
 
 cd $WD
-read REPLY"?clean $WD? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+[[ $YES -eq 0 ]] && read REPLY"?clean $WD? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && git clean -fdx
 mkdir -p {build,release}
 cd build
 

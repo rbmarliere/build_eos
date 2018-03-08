@@ -8,14 +8,23 @@ export NPROC
 export USER_GIT_ROOT
 mkdir -p $USER_GIT_ROOT || exit 1
 
-read REPLY"?build secp256k1-zkp? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && ./build_secp256k1-zkp
-read REPLY"?build binaryen? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && ./build_binaryen
-read REPLY"?build boost? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && ./build_boost
-read REPLY"?build llvm? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && ./build_llvm
-read REPLY"?build eos? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && ./build_eos
+YES=0
+while getopts "y" OPTION; do
+    case $OPTION in
+        y)
+            YES=1
+    esac
+done
+export YES
+
+[[ $YES -eq 0 ]] && read REPLY"?build secp256k1-zkp? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && ./build_secp256k1-zkp
+[[ $YES -eq 0 ]] && read REPLY"?build binaryen? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && ./build_binaryen
+[[ $YES -eq 0 ]] && read REPLY"?build boost? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && ./build_boost
+[[ $YES -eq 0 ]] && read REPLY"?build llvm? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && ./build_llvm
+[[ $YES -eq 0 ]] && read REPLY"?build eos? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && ./build_eos
 

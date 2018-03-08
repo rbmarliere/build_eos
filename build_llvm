@@ -15,8 +15,8 @@ if [[ ! -d $WD ]]; then
 fi
 
 cd $WD
-read REPLY"?clean $WD? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+[[ $YES -eq 0 ]] && read REPLY"?clean $WD? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && git clean -fdx
 mkdir {build,release}
 cd build
 

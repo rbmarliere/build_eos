@@ -5,11 +5,11 @@ WD=$USER_GIT_ROOT/eos
 
 cd $WD
 
-read REPLY"?clean $WD? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+[[ $YES -eq 0 ]] && read REPLY"?clean $WD? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && git clean -fdx
 
-read REPLY"?pull $WD? (type yes if you want to checkout a specific tag) [y|N] "
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+[[ $YES -eq 0 ]] && read REPLY"?pull $WD? (type yes if you want to checkout a specific tag) [y|N] "
+if [[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]]; then
     read TAG"?tag? (default: master) "
     TAG=${TAG:-master}
     git fetch --all

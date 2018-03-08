@@ -9,8 +9,8 @@ WD=$USER_GIT_ROOT/boost
                     git@github.com:boostorg/boost.git $WD
 
 cd $WD
-read REPLY"?clean $WD? [y|N] "
-[[ $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+[[ $YES -eq 0 ]] && read REPLY"?clean $WD? [y|N] "
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && git clean -fdx
 mkdir -p {build,release}
 
 [[ $(uname) == "Linux" ]] && TOOLSET=gcc
