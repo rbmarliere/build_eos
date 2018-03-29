@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-BOOST_VER=boost-1.64.0
+BOOST_VER=boost-1.66.0
 WD=$USER_GIT_ROOT/boost
 [[ ! -d $WD ]] && git clone \
                     --recursive \
