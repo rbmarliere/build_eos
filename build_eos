@@ -15,7 +15,7 @@ if [[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]]; then
     git fetch --all
     git checkout $TAG
     git pull origin $TAG
-    git submodule update --recursive
+    git submodule update --init --recursive
 fi
 mkdir -p {build,release}
 cd build
