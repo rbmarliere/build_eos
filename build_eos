@@ -6,7 +6,7 @@ WD=$USER_GIT_ROOT/eos
 cd $WD
 
 [[ $YES -eq 0 ]] && read REPLY"?clean $WD? [y|N] "
-[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && git clean -fdx
+[[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]] && git clean -fdx && git checkout .
 
 [[ $YES -eq 0 ]] && read REPLY"?pull $WD? (type yes if you want to checkout a specific tag) [y|N] "
 if [[ $YES -eq 1 || $REPLY =~ ^[Yy]$ ]]; then
