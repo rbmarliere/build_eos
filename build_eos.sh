@@ -6,8 +6,8 @@ prompt_input_yN()
     while true; do
         read -k 1 yn
         case ${yn} in
-            [Yy]* ) printf "\n" && return 0; break;;
-            \n ) printf "\n" && return 1; break;;
+            [Yy]* ) printf "\n"; return 0; break;;
+            \n ) printf "\n"; return 1; break;;
             * ) return 1;;
         esac
     done
@@ -18,12 +18,13 @@ build_boost()
     BOOST_VER=boost-1.66.0
 
     WD=${USER_GIT_ROOT}/boost
-    [ ! -d ${WD} ] \
-        && git clone --recursive \
-                     --single-branch \
-                     --branch "${BOOST_VER}" \
-                     git@github.com:boostorg/boost.git \
-                     ${WD}
+    if [ ! -d ${WD} ]; then
+        git clone --recursive \
+                  --single-branch \
+                  --branch "${BOOST_VER}" \
+                  git@github.com:boostorg/boost.git \
+                  ${WD}
+    fi
     cd ${WD}
 
     prompt_input_yN "git clean" && git clean -fdx && git checkout .
@@ -53,7 +54,7 @@ build_eos()
     NPROC=$(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 1)
     export NPROC
 
-    prompt_input_yN "build secp256k1-zkp" && build_secp256k1-zkp
+    prompt_input_yN "build secp256k1-zkp" && build_secp256k1
     prompt_input_yN "build boost" && build_boost
     prompt_input_yN "build eos" || return 0
 
@@ -69,8 +70,9 @@ build_eos()
     mkdir -p ${USER_GIT_ROOT}
 
     WD=${USER_GIT_ROOT}/eos
-    [ ! -d ${WD} ] \
-        && git clone --recursive git@github.com:EOSIO/eos.git ${WD}
+    if [ ! -d ${WD} ]; then
+        git clone --recursive git@github.com:EOSIO/eos.git ${WD}
+    fi
     cd ${WD}
 
     prompt_input_yN "git clean" && git clean -fdx && git checkout .
@@ -103,11 +105,12 @@ build_eos()
     make -j${NPROC} install
 }
 
-build_secp256k1-zkp()
+build_secp256k1()
 {
     WD=${USER_GIT_ROOT}/secp256k1-zkp
-    [ ! -d ${WD} ] \
-        && git clone git@github.com:cryptonomex/secp256k1-zkp.git ${WD}
+    if [ ! -d ${WD} ]; then
+        git clone git@github.com:cryptonomex/secp256k1-zkp.git ${WD}
+    fi
     cd ${WD}
 
     if prompt_input_yN "git clean"; then
