@@ -1,11 +1,5 @@
 #!/bin/sh
 
-die()
-{
-    [ $# -gt 0 ] && printf -- "%s\n" "$*"
-    return 1
-}
-
 prompt_input_yN()
 {
     printf "${1}? [y|N] " ; shift
@@ -69,7 +63,7 @@ build_eos()
     fi
     case "${USER_GIT_ROOT}" in
         /*) ;;
-        *) die "error: not an absolute path" ;;
+        *) printf "error: not an absolute path\n"; return 1 ;;
     esac
     export USER_GIT_ROOT
     mkdir -p ${USER_GIT_ROOT}
