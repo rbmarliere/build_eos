@@ -15,17 +15,15 @@ prompt_input_yN()
 
 build_boost()
 {
-    BOOST_VER=boost-1.66.0
-
-    WD=${USER_GIT_ROOT}/boost
-    if [ ! -d ${WD} ]; then
+    wd=${USER_GIT_ROOT}/boost
+    if [ ! -d ${wd} ]; then
         git clone --recursive \
                   --single-branch \
-                  --branch "${BOOST_VER}" \
+                  --branch boost-1.66.0 \
                   git@github.com:boostorg/boost.git \
-                  ${WD}
+                  ${wd}
     fi
-    cd ${WD}
+    cd ${wd}
 
     prompt_input_yN "git clean" && git clean -fdx && git checkout .
 
@@ -36,14 +34,14 @@ build_boost()
     ./b2 \
         --ignore-site-config \
         -j${NPROC} \
-        --prefix=${WD}/release \
+        --prefix=${wd}/release \
         toolset=clang \
         threading=multi \
         headers
     ./b2 \
         --ignore-site-config \
         -j${NPROC} \
-        --prefix=${WD}/release \
+        --prefix=${wd}/release \
         toolset=clang \
         threading=multi \
         install
@@ -69,22 +67,23 @@ build_eos()
     export USER_GIT_ROOT
     mkdir -p ${USER_GIT_ROOT}
 
-    WD=${USER_GIT_ROOT}/eos
-    if [ ! -d ${WD} ]; then
-        git clone --recursive git@github.com:EOSIO/eos.git ${WD}
+    wd=${USER_GIT_ROOT}/eos
+    if [ ! -d ${wd} ]; then
+        git clone --recursive git@github.com:EOSIO/eos.git ${wd}
     fi
-    cd ${WD}
+    pwd=$(pwd)
+    cd ${wd}
 
     prompt_input_yN "git clean" && git clean -fdx && git checkout .
     git fetch --all
     if prompt_input_yN "checkout specific tag"; then
         git tag
-        printf "TAG="
-        read TAG
+        printf "tag="
+        read tag
     fi
     if prompt_input_yN "git pull"; then
-        git checkout ${TAG}
-        git pull origin ${TAG}
+        git checkout ${tag}
+        git pull origin ${tag}
         git submodule sync
         git submodule update --init --recursive
     fi
@@ -103,15 +102,17 @@ build_eos()
         ${INSTALL_PREFIX} \
         ..
     make -j${NPROC} install
+
+    cd ${pwd}
 }
 
 build_secp256k1()
 {
-    WD=${USER_GIT_ROOT}/secp256k1-zkp
-    if [ ! -d ${WD} ]; then
-        git clone git@github.com:cryptonomex/secp256k1-zkp.git ${WD}
+    wd=${USER_GIT_ROOT}/secp256k1-zkp
+    if [ ! -d ${wd} ]; then
+        git clone git@github.com:cryptonomex/secp256k1-zkp.git ${wd}
     fi
-    cd ${WD}
+    cd ${wd}
 
     if prompt_input_yN "git clean"; then
         git clean -fdx
@@ -119,7 +120,7 @@ build_secp256k1()
     fi
 
     ./autogen.sh
-    ./configure --prefix=${WD}/release
+    ./configure --prefix=${wd}/release
     gmake -j${NPROC} install
 }
 
