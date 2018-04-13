@@ -1,6 +1,6 @@
 # build_eos
 
-This tool is intended to keep it simple the building of EOS.IO software in Funtoo
+This tool is intended to keep it simple when building EOS.IO software in Funtoo
 
 Sample snippet for including in a shell runcom file (e.g. ~/.bashrc):
 
