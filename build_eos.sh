@@ -6,6 +6,19 @@ die()
     return 1
 }
 
+prompt_input_yN()
+{
+    printf "${1}? [y|N] " ; shift
+    while true; do
+        read -k 1 yn
+        case ${yn} in
+            [Yy]* ) printf "\n" && return 0; break;;
+            \n ) printf "\n" && return 1; break;;
+            * ) return 1;;
+        esac
+    done
+}
+
 build_boost()
 {
     BOOST_VER=boost-1.66.0
@@ -116,17 +129,4 @@ build_secp256k1-zkp()
 #check_deps()
 #{
 #}
-
-prompt_input_yN()
-{
-    printf "${1}? [y|N] " ; shift
-    while true; do
-        read -k 1 yn
-        case ${yn} in
-            [Yy]* ) printf "\n" && return 0; break;;
-            \n ) printf "\n" && return 1; break;;
-            * ) return 1;;
-        esac
-    done
-}
 
