@@ -87,10 +87,19 @@ build_eos()
         git submodule sync
         git submodule update --init --recursive
     fi
-    prompt_input_yN "install to system prefix" \
-        || INSTALL_PREFIX="-DCMAKE_INSTALL_PREFIX=${WD}/release"
 
-    mkdir -p {build,release}
+    if prompt_input_yN "install to custom prefix"; then
+        printf "absolute release path, destination="
+        read destination
+        case "${destination}" in
+            /*) ;;
+            *) printf "error: not an absolute path\n"; return 1 ;;
+        esac
+        mkdir -p ${destination}
+        INSTALL_PREFIX="-DCMAKE_INSTALL_PREFIX=${destination}"
+    fi
+
+    mkdir -p build
     cd build
 
     cmake \
