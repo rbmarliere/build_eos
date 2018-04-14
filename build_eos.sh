@@ -2,7 +2,7 @@
 
 prompt_input_yN()
 {
-    printf "${1}? [y|N] " ; shift
+    printf "$1? [y|N] " ; shift
     while true; do
         read -k 1 yn
         case ${yn} in
