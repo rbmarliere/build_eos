@@ -4,7 +4,7 @@ prompt_input_yN()
 {
     printf "$1? [y|N] " ; shift
     while true; do
-        read -k 1 YN
+        read YN
         case ${YN} in
             [Yy]* ) printf "\n"; return 0; break;;
             * ) printf "\n"; return 1; break;;
@@ -54,13 +54,6 @@ build_eos()
     NPROC=$(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 1)
     export NPROC
 
-    prompt_input_yN "build secp256k1-zkp" && build_secp256k1
-    prompt_input_yN "build boost" && build_boost
-    if prompt_input_yN "build llvm"; then
-        prompt_input_yN "install to system prefix (use portage)" && build_llvm_funtoo || build_llvm_out
-    fi
-    prompt_input_yN "build eos" || return 0
-
     if [ "${USER_GIT_ROOT}" = "" ]; then
         printf "absolute path to clone required projects into, USER_GIT_ROOT="
         read USER_GIT_ROOT
@@ -71,6 +64,13 @@ build_eos()
     esac
     export USER_GIT_ROOT
     mkdir -p ${USER_GIT_ROOT}
+
+    prompt_input_yN "build secp256k1-zkp" && build_secp256k1
+    prompt_input_yN "build boost" && build_boost
+    if prompt_input_yN "build llvm"; then
+        prompt_input_yN "install to system prefix (use portage)" && build_llvm_funtoo || build_llvm_out
+    fi
+    prompt_input_yN "build eos" || return 0
 
     WD=${USER_GIT_ROOT}/eos
     if [ ! -d ${WD} ]; then
