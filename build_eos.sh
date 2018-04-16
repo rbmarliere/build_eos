@@ -7,8 +7,7 @@ prompt_input_yN()
         read -k 1 YN
         case ${YN} in
             [Yy]* ) printf "\n"; return 0; break;;
-            \n ) printf "\n"; return 1; break;;
-            * ) return 1;;
+            * ) printf "\n"; return 1; break;;
         esac
     done
 }
@@ -84,6 +83,7 @@ build_eos()
         git clean -fdx 2>/dev/null || sudo git clean -fdx
         git checkout .
     fi
+    git branch
     if prompt_input_yN "checkout specific tag"; then
         git fetch --all
         git tag
@@ -142,7 +142,7 @@ build_eos()
 build_llvm_funtoo()
 {
     if [ ! -f /etc/portage/repos.conf/llvm_wasm ]; then
-        sudo cat > /etc/portage/repos.conf/llvm_wasm << EOF
+        cat > llvm_wasm << EOF
 [DEFAULT]
 main-repo = core-kit
 [llvm_wasm]
@@ -150,16 +150,24 @@ location = /var/git/llvm_wasm
 auto-sync = no
 priority = 10
 EOF
+        sudo mv llvm_wasm /etc/portage/repos.conf/
+    fi
+
+    if [ "$(groups | grep portage)" = "" ]; then
+        sudo usermod -aG portage $(whoami)
     fi
 
     if [ -d /var/git/llvm_wasm ]; then
-        sudo git --git-dir=/var/git/llvm_wasm/.git --work-tree=/var/git/llvm_wasm pull origin
+        git --git-dir=/var/git/llvm_wasm/.git --work-tree=/var/git/llvm_wasm pull origin
     else
-        sudo git clone git@github.com:zrts/llvm_wasm.git /var/git/llvm_wasm
+        git clone git@github.com:zrts/llvm_wasm.git /var/git/llvm_wasm
     fi
 
     if [ -d /etc/portage/package.use ]; then
-        sudo printf "=sys-devel/llvm-4.0.1-r1::llvm_wasm wasm" >> /etc/portage/package.use/llvm
+        if [ ! -f /etc/portage/package.use/llvm ]; then
+            printf "=sys-devel/llvm-4.0.1-r1::llvm_wasm wasm" > llvm
+            sudo mv llvm /etc/portage/package.use/
+        fi
     else
         USE_LINE="=sys-devel/llvm-4.0.1-r1::llvm_wasm wasm"
         if [ "$(grep "${USE_LINE}" /etc/portage/package.use)" = ""]; then
