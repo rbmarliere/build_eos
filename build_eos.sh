@@ -160,6 +160,7 @@ EOF
     if [ -d /var/git/llvm_wasm ]; then
         git --git-dir=/var/git/llvm_wasm/.git --work-tree=/var/git/llvm_wasm pull origin
     else
+        sudo chmod g+w /var/git
         git clone git@github.com:zrts/llvm_wasm.git /var/git/llvm_wasm
     fi
 
