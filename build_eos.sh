@@ -141,6 +141,9 @@ build_eos()
 
 build_llvm_funtoo()
 {
+    PWD=$(pwd)
+    cd
+
     if [ ! -f /etc/portage/repos.conf/llvm_wasm ]; then
         cat > llvm_wasm << EOF
 [DEFAULT]
@@ -180,7 +183,9 @@ EOF
     fi
 
     sudo ego sync
-    sudo emerge -vuND --with-bdeps=y --backtrack=1000 "=sys-devel/clang-4.0.1" "=sys-devel/llvm-4.0.1-r1::llvm_wasm"
+    sudo emerge "=sys-devel/clang-4.0.1" "=sys-devel/llvm-4.0.1-r1::llvm_wasm"
+
+    cd ${PWD}
 }
 
 build_llvm_out()
