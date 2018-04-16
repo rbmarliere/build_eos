@@ -160,24 +160,27 @@ EOF
     if [ -d /var/git/llvm_wasm ]; then
         git --git-dir=/var/git/llvm_wasm/.git --work-tree=/var/git/llvm_wasm pull origin
     else
+        git clone git@github.com:zrts/llvm_wasm.git
         sudo chmod g+w /var/git
-        git clone git@github.com:zrts/llvm_wasm.git /var/git/llvm_wasm
+        sudo mv llvm_wasm /var/git
     fi
 
     if [ -d /etc/portage/package.use ]; then
         if [ ! -f /etc/portage/package.use/llvm ]; then
             printf "=sys-devel/llvm-4.0.1-r1::llvm_wasm wasm" > llvm
-            sudo mv llvm /etc/portage/package.use/
+            sudo mv llvm /etc/portage/package.use
         fi
     else
         USE_LINE="=sys-devel/llvm-4.0.1-r1::llvm_wasm wasm"
-        if [ "$(grep "${USE_LINE}" /etc/portage/package.use)" = ""]; then
-            sudo printf "${USE_LINE}" >> /etc/portage/package.use
+        if [ "$(grep ${USE_LINE} /etc/portage/package.use)" = "" ]; then
+            sudo cat /etc/portage/package.use > package.use
+            printf "${USE_LINE}" >> package.use
+            sudo mv package.use /etc/portage
         fi
     fi
 
     sudo ego sync
-    sudo emerge "=sys-devel/clang-4.0.1" "=sys-devel/llvm-4.0.1-r1::llvm_wasm"
+    sudo emerge -vuND --with-bdeps=y --backtrack=1000 "=sys-devel/clang-4.0.1" "=sys-devel/llvm-4.0.1-r1::llvm_wasm"
 }
 
 build_llvm_out()
