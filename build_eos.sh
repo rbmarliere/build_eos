@@ -128,7 +128,7 @@ build_eos()
         -DBOOST_ROOT=${USER_GIT_ROOT}/boost/release \
         -DCMAKE_CXX_COMPILER=${CXX_COMPILER} \
         -DCMAKE_C_COMPILER=${C_COMPILER} \
-        -DCMAKE_EXE_LINKER_FLAGS="-lLLVMInstCombine -lLLVMTransformUtils -lLLVMScalarOpts -lLLVMExecutionEngine -lLLVMObject -lLLVMRuntimeDyld" \
+        -DCMAKE_EXE_LINKER_FLAGS="-lpthread -lLLVMInstCombine -lLLVMTransformUtils -lLLVMScalarOpts -lLLVMExecutionEngine -lLLVMObject -lLLVMRuntimeDyld" \
         -DLLVM_DIR=${LLVM_DIR} \
         -DSecp256k1_ROOT_DIR=${USER_GIT_ROOT}/secp256k1-zkp/release \
         -DWASM_ROOT=${WASM_ROOT} \
