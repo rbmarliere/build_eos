@@ -105,7 +105,7 @@ build_eos()
             *) printf "error: not an absolute path\n"; return 1 ;;
         esac
         mkdir -p ${INSTALL_PREFIX}
-        INSTALL_PREFIX="-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFI}"
+        INSTALL_PREFIX="-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}"
     fi
 
     CXX_COMPILER=/usr/lib/llvm/4/bin/clang++
