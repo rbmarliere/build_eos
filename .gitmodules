@@ -1,0 +1,3 @@
+[submodule "prompt_input_yN"]
+	path = prompt_input_yN
+	url = https://github.com/zrts/prompt_input_yN.git
