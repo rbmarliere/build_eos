@@ -207,6 +207,7 @@ build_llvm_out()
         -DCMAKE_CXX_COMPILER=/usr/lib/llvm/4/bin/clang++ \
         -DCMAKE_C_COMPILER=/usr/lib/llvm/4/bin/clang \
         -DCMAKE_INSTALL_PREFIX=${WD}/release \
+        -DCORE_SYMBOL_NAME="EOS" \
         -DLLVM_ENABLE_RTTI=On \
         -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
         -DLLVM_TARGETS_TO_BUILD=X86 \
