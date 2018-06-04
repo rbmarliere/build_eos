@@ -8,7 +8,7 @@ build_boost()
     if [ ! -d ${WD} ]; then
         git clone --recursive \
                   --single-branch \
-                  --branch boost-1.66.0 \
+                  --branch boost-1.67.0 \
                   git@github.com:boostorg/boost.git \
                   ${WD}
     fi
