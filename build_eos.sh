@@ -4,6 +4,8 @@ source $(dirname "$0")/prompt_input_yN/prompt_input_yN.sh
 
 build_boost()
 {
+    export PATH=/usr/lib/llvm/4/bin:${PATH}
+
     WD=${USER_GIT_ROOT}/boost
     if [ ! -d ${WD} ]; then
         git clone --recursive \
