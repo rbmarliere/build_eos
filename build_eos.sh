@@ -66,7 +66,7 @@ build_eos()
 
     WD=${USER_GIT_ROOT}/eos
     if [ ! -d ${WD} ]; then
-        git clone --recursive git@github.com:EOSIO/eos.git ${WD}
+        git clone --recursive git@github.com:EOS-Mainnet/eos.git ${WD}
     fi
     PWG=$(pwd)
     cd ${WD}
