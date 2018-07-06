@@ -58,10 +58,10 @@ build_eos()
     mkdir -p ${USER_GIT_ROOT}
 
     prompt_input_yN "build secp256k1-zkp" && build_secp256k1
-    prompt_input_yN "build boost" && build_boost
     if prompt_input_yN "build llvm"; then
         prompt_input_yN "install to system prefix (use portage)" && build_llvm_funtoo || build_llvm_out
     fi
+    prompt_input_yN "build boost" && build_boost
     prompt_input_yN "build eos" || return 0
 
     WD=${USER_GIT_ROOT}/eos
