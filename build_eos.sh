@@ -29,6 +29,7 @@ build_boost()
         --ignore-site-config \
         -j${NPROC} \
         --prefix=${WD}/release \
+        --with-test \
         toolset=clang \
         threading=multi \
         headers
@@ -36,6 +37,7 @@ build_boost()
         --ignore-site-config \
         -j${NPROC} \
         --prefix=${WD}/release \
+        --with-test \
         toolset=clang \
         threading=multi \
         install
