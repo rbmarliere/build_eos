@@ -1,0 +1,49 @@
+diff --git a/build_eos.sh b/build_eos.sh
+index b664b6b..69c73a3 100644
+--- a/build_eos.sh
++++ b/build_eos.sh
+@@ -4,8 +4,8 @@ source $(dirname "$0")/prompt_input_yN/prompt_input_yN.sh
+ 
+ build_boost()
+ {
+-    export PATH=/usr/lib/llvm/4/bin:${PATH}
+-
++    NPROC=${NPROC:-"$(nproc)"}
++    RELEASE_DIR=${HOME}/opt/boost
+     WD=${USER_GIT_ROOT}/boost
+     if [ ! -d ${WD} ]; then
+         git clone --recursive \
+@@ -20,26 +20,17 @@ build_boost()
+         git clean -fdx
+         git checkout .
+     fi
++    if ! prompt_input_yN "rm release dir"; then
++        return 1
++    fi
+ 
+-    mkdir -p {build,release}
++    rm -rf ${RELEASE_DIR}
++    mkdir ${RELEASE_DIR}
+ 
+-    ./bootstrap.sh \
+-        --with-toolset=clang
+-    ./b2 \
+-        --ignore-site-config \
+-        -j${NPROC} \
+-        --prefix=${WD}/release \
+-        --with-test \
+-        toolset=clang \
+-        threading=multi \
+-        headers
++    ./bootstrap.sh --prefix=${RELEASE_DIR} --with-libraries=all
+     ./b2 \
+-        --ignore-site-config \
+         -j${NPROC} \
+-        --prefix=${WD}/release \
+-        --with-test \
+-        toolset=clang \
+-        threading=multi \
++        --prefix=${RELEASE_DIR} \
+         install
+ }
+ 
