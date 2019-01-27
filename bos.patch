@@ -1,0 +1,92 @@
+diff --git a/build_eos.sh b/build_eos.sh
+index b664b6b..a2fee9b 100644
+--- a/build_eos.sh
++++ b/build_eos.sh
+@@ -9,9 +9,8 @@ build_boost()
+     WD=${USER_GIT_ROOT}/boost
+     if [ ! -d ${WD} ]; then
+         git clone --recursive \
+-                  --single-branch \
+                   --branch boost-1.67.0 \
+-                  git@github.com:boostorg/boost.git \
++                  https://github.com/boostorg/boost \
+                   ${WD}
+     fi
+     cd ${WD}
+@@ -23,22 +22,17 @@ build_boost()
+ 
+     mkdir -p {build,release}
+ 
+-    ./bootstrap.sh \
+-        --with-toolset=clang
++    ./bootstrap.sh --prefix=${RELEASE_DIR} --with-libraries=all
+     ./b2 \
+         --ignore-site-config \
+         -j${NPROC} \
+         --prefix=${WD}/release \
+-        --with-test \
+-        toolset=clang \
+         threading=multi \
+         headers
+     ./b2 \
+         --ignore-site-config \
+         -j${NPROC} \
+         --prefix=${WD}/release \
+-        --with-test \
+-        toolset=clang \
+         threading=multi \
+         install
+ }
+@@ -66,9 +60,9 @@ build_eos()
+     prompt_input_yN "build boost" && build_boost
+     prompt_input_yN "build eos" || return 0
+ 
+-    WD=${USER_GIT_ROOT}/eos
++    WD=${USER_GIT_ROOT}/bos
+     if [ ! -d ${WD} ]; then
+-        git clone --recursive git@github.com:EOS-Mainnet/eos.git ${WD}
++        git clone --recursive https://github.com/EOS-Mainnet/eos ${WD}
+     fi
+     PWG=$(pwd)
+     cd ${WD}
+@@ -126,6 +120,7 @@ build_eos()
+         -DLLVM_DIR=${LLVM_DIR} \
+         -DSecp256k1_ROOT_DIR=${USER_GIT_ROOT}/secp256k1-zkp/release \
+         -DWASM_ROOT=${WASM_ROOT} \
++        -DOPENSSL_INCLUDE_DIR=/usr/include/openssl \
+         ..
+     make -j${NPROC}
+     prompt_input_yN "sudo make install" && sudo make install
+@@ -157,7 +152,7 @@ EOF
+     if [ -d /var/git/llvm_wasm ]; then
+         git --git-dir=/var/git/llvm_wasm/.git --work-tree=/var/git/llvm_wasm pull origin
+     else
+-        git clone git@github.com:zrts/llvm_wasm.git
++        git clone https://github.com/rbmarliere/llvm_wasm
+         sudo chmod g+w /var/git
+         sudo mv llvm_wasm /var/git
+     fi
+@@ -190,12 +185,12 @@ build_llvm_out()
+             --depth 1 \
+             --single-branch \
+             --branch release_40 \
+-            git@github.com:llvm-mirror/llvm.git ${WD}
++            https://github.com/llvm-mirror/llvm ${WD}
+         git clone \
+             --depth 1 \
+             --single-branch \
+             --branch release_40 \
+-            git@github.com:llvm-mirror/clang.git ${WD}/tools/clang
++            https://github.com/llvm-mirror/clang ${WD}/tools/clang
+     fi
+ 
+     cd ${WD}
+@@ -224,7 +219,7 @@ build_secp256k1()
+ {
+     WD=${USER_GIT_ROOT}/secp256k1-zkp
+     if [ ! -d ${WD} ]; then
+-        git clone git@github.com:cryptonomex/secp256k1-zkp.git ${WD}
++        git clone https://github.com/cryptonomex/secp256k1-zkp ${WD}
+     fi
+     cd ${WD}
+ 
